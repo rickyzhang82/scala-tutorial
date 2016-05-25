@@ -1,6 +1,6 @@
 package week4
 
-import week3._
+import week3.{List, Cons, Nil}
 /**
   * Created by rizhan on 5/24/16.
   */
