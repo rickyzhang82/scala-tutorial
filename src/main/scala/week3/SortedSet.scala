@@ -12,13 +12,13 @@ import scala.math.Ordered
   * Ordering ==> java Comparator. There are may be different ordering way!!!
   * But why the heck Int, Long and etc are not Ordering?
   */
-abstract class SortedSet[T <: Ordered[T]] {
+abstract class SortedSet[T](implicit ordering: Ordering[T]) {
   def incl(x: T): SortedSet[T]
   def contains(x: T): Boolean
   def union(other: SortedSet[T]): SortedSet[T]
 }
 
-class Empty [T <: Ordered[T]] extends SortedSet[T]  {
+class Empty [T](implicit ordering: Ordering[T]) extends SortedSet[T]  {
 
   def incl(x: T): SortedSet[T] = {
     new NonEmpty(x, new Empty, new Empty)
@@ -28,16 +28,16 @@ class Empty [T <: Ordered[T]] extends SortedSet[T]  {
   override def toString = "."
 }
 
-class NonEmpty[T <: Ordered[T]](elem: T, left: SortedSet[T], right: SortedSet[T]) extends SortedSet[T]{
+class NonEmpty[T](elem: T, left: SortedSet[T], right: SortedSet[T])(implicit ordering: Ordering[T]) extends SortedSet[T]{
   def incl(x: T): SortedSet[T] ={
-    if (x < elem) new NonEmpty(elem, left incl x, right)
-    else if(x > elem) new NonEmpty(elem, left, right incl x)
+    if (ordering.lt(x, elem)) new NonEmpty(elem, left incl x, right)
+    else if(ordering.gt(x,elem)) new NonEmpty(elem, left, right incl x)
     else this
   }
 
   def contains(x: T): Boolean ={
-    if (x < elem) left contains x
-    else if (x > elem) right contains x
+    if (ordering.lt(x, elem)) left contains x
+    else if(ordering.gt(x,elem)) right contains x
     else true
   }
 
