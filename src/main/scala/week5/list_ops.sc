@@ -32,9 +32,13 @@ def reverse[T](xs: List[T]): List[T] = xs match {
 
 reverse(diag3)
 
-def removeAt[T](xs: List[T], n: Int): List[T] = xs match {
-  case List() => xs
-  case z :: zs => if (0 == n) zs else z :: removeAt(zs, n - 1)
+def removeAt[T](xs: List[T], n: Int): List[T] = {
+  if (n < 0)
+    throw new IllegalArgumentException("n < 0!")
+  xs match {
+    case List() => xs
+    case z :: zs => if (0 == n) zs else z :: removeAt(zs, n - 1)
+  }
 }
 
 removeAt(fruit, 0)
@@ -42,6 +46,28 @@ removeAt(fruit, 1)
 removeAt(fruit, 2)
 removeAt(fruit, 3)
 removeAt(fruit, 4)
+//removeAt(fruit, -1)
+
+// flatten list
+def flatten(xs: List[Any]): List[Any] = {
+
+  def flattenAny (x: Any): List[Any] = x match {
+    case Nil => Nil
+    case z :: zs => flattenAny(z) ::: flatten(zs)
+    case y => List(y)
+  }
+
+  xs match {
+    case Nil => Nil
+    case z :: zs => flattenAny(z) ::: flatten(zs)
+  }
+}
+
+flatten(List(List(2), 3, List(4, List(5,8))))
+
+
+
+
 
 
 
